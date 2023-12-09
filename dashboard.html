@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <title>SharePlate</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap');
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            height: 100%;
+            width: 300px;
+            background-color: #343a40;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+            z-index: 1;
+            transition: left 0.3s ease;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: white;
+            margin: 10px 0;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: #007bff;
+        }
+
+        .content {
+            margin-left: 300px;
+            padding: 20px;
+            width: calc(100% - 300px);
+            transition: margin-left 0.3s ease;
+        }
+
+        .logo {
+            font-size: 48px;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .profile {
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .profile:hover {
+            color: #0056b3;
+        }
+
+        .message-form {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #message {
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        #message:focus {
+            border-color: #0056b3;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .messages {
+            width: 100%;
+            max-width: 800px;
+            min-height: 300px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .messages h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .messages ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .messages li {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .messages li:last-child {
+            border-bottom: none;
+        }
+
+        .message-history {
+            margin-top: 30px;
+        }
+
+        .back-arrow {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #2980b9;
+            font-size: 24px;
+            text-decoration: none;
+        }
+
+        .social {
+            margin-top: 20px;
+        }
+
+        .social a {
+            font-size: 24px;
+            margin-right: 10px;
+            color: #ddd;
+        }
+        
+        .message-history {
+            width: 100%;
+            max-width: 800px;
+            min-height: 300px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navigation">
+        <a class="back-arrow" href="http://localhost:3001/SharePlate/login" style="text-decoration: none;">
+            <span>&larr;</span> Back
+        </a>
+    </nav>
+    <div class="sidebar" id="sidebar">
+        <a href="http://localhost:3001/SharePlate">Home</a>
+        <a href="#">Services</a>
+        <a href="#">Settings</a>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <a href="#">Follow Us</a>
+        <div class="social">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="logo" style="margin-left: 400px; margin-top: 20px;">:)</div>
+        <div class="profile" onclick="toggleSidebar()">UP</div>
+
+        <div class="message-form">
+            <textarea id="message" placeholder="Write your message..."></textarea>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+
+        <div class="messages">
+            <h2>Messages</h2>
+            <ul id="message-list"></ul>
+        </div>
+
+        <div class="message-history">
+            <h2>Message History</h2>
+            <ul id="message-history-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        const messageHistory = [];
+
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            if (sidebar.style.left === "0px" || sidebar.style.left === "") {
+                sidebar.style.left = "-300px";
+                document.querySelector(".content").style.marginLeft = "0";
+            } else {
+                sidebar.style.left = "0px";
+                document.querySelector(".content").style.marginLeft = "300px";
+
+                fetch('/api/profile')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.querySelector('.profile').textContent = `Welcome!!`;
+                    });
+            }
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            if (message) {
+                fetch('/api/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: message
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    fetchMessages();
+                    document.getElementById('message').value = '';
+                });
+            }
+        }
+
+        function fetchMessages() {
+            fetch('/api/messages')
+                .then(response => response.json())
+                .then(data => {
+                    const messageList = document.getElementById('message-list');
+                    messageList.innerHTML = '';
+                    data.messages.forEach(message => {
+                        const li = document.createElement('li');
+                        li.textContent = message.text;
+                        messageList.appendChild(li);
+                    });
+
+                    const messageHistoryList = document.getElementById('message-history-list');
+                    messageHistoryList.innerHTML = '';
+                    data.messages.forEach(message => {
+                        const li = document.createElement('li');
+                        li.textContent = message.text;
+                        messageHistoryList.appendChild(li);
+                    });
+                });
+        }
+
+        fetchMessages();
+        fetch('/api/profile')
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector('.profile').textContent = `Welcome!!`;
+            });
+    </script>
+
+</body>
+
+</html>
